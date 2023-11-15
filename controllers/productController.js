@@ -7,7 +7,6 @@ exports.getAllProducts = async (req, res, next) => {
 
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, "i");
-
       searchQuery = {
         ...searchQuery,
         $or: [{ Name: searchRegex }, { Description: searchRegex }],
@@ -26,9 +25,22 @@ exports.getAllProducts = async (req, res, next) => {
       }
     }
 
-    const products = await Product.find(searchQuery).sort(sortOptions);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
 
-    res.status(200).json({ products });
+    const startIndex = (page - 1) * limit;
+
+    const totalProducts = await Product.countDocuments(searchQuery);
+
+    const products = await Product.find(searchQuery).sort(sortOptions).skip(startIndex).limit(limit);
+
+    const pagination = {
+      total: totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+    };
+
+    res.status(200).json({ products, pagination });
   } catch (err) {
     next(err);
   }
