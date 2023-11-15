@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/", productController.getAllProducts);
 
+router.get("/:productId", productController.getProductById);
+
 router.post("/addNewProduct", productController.addNewEmptyProduct);
 
 router.post("/updateProduct/:productId", productController.updateProductInfo);
