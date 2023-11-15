@@ -3,8 +3,44 @@ const AppError = require("../utils/appError");
 
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
-    res.status(200).json({ products });
+    let searchQuery = {};
+
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      searchQuery = {
+        ...searchQuery,
+        $or: [{ Name: searchRegex }, { Description: searchRegex }],
+      };
+    }
+
+    let sortOptions = {};
+
+    if (req.query.sort) {
+      const sortOrder = req.query.order === "desc" ? -1 : 1;
+
+      if (req.query.sort === "name") {
+        sortOptions = { Name: sortOrder };
+      } else if (req.query.sort === "date") {
+        sortOptions = { CreationDate: sortOrder };
+      }
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+
+    const startIndex = (page - 1) * limit;
+
+    const totalProducts = await Product.countDocuments(searchQuery);
+
+    const products = await Product.find(searchQuery).sort(sortOptions).skip(startIndex).limit(limit);
+
+    const pagination = {
+      total: totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+    };
+
+    res.status(200).json({ products, pagination });
   } catch (err) {
     next(err);
   }
