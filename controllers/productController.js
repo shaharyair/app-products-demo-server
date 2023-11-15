@@ -14,7 +14,19 @@ exports.getAllProducts = async (req, res, next) => {
       };
     }
 
-    const products = await Product.find(query);
+    let sortOptions = {};
+
+    if (req.query.sort) {
+      const sortOrder = req.query.order === "desc" ? -1 : 1;
+
+      if (req.query.sort === "name") {
+        sortOptions = { Name: sortOrder };
+      } else if (req.query.sort === "date") {
+        sortOptions = { CreationDate: sortOrder };
+      }
+    }
+
+    const products = await Product.find(searchQuery).sort(sortOptions);
 
     res.status(200).json({ products });
   } catch (err) {
