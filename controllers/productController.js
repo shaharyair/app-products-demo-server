@@ -32,7 +32,11 @@ exports.getAllProducts = async (req, res, next) => {
 
     const totalProducts = await Product.countDocuments(searchQuery);
 
-    const products = await Product.find(searchQuery).sort(sortOptions).skip(startIndex).limit(limit);
+    const products = await Product.find(searchQuery)
+      .collation({ locale: "en" })
+      .sort(sortOptions)
+      .skip(startIndex)
+      .limit(limit);
 
     const pagination = {
       total: totalProducts,
