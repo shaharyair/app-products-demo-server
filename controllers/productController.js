@@ -2,7 +2,7 @@ const Product = require("../models/product");
 const AppError = require("../utils/appError");
 
 // Controller function to get a list of products with optional search, sorting, and pagination
-exports.getAllProducts = async (req, res, next) => {
+exports.getProducts = async (req, res, next) => {
   try {
     // Set up the initial search query
     let searchQuery = {};
