@@ -4,6 +4,7 @@ productSchema = new mongoose.Schema({
   Name: {
     type: String,
     maxlength: 30,
+    required: true,
   },
   Description: {
     type: String,
@@ -12,6 +13,7 @@ productSchema = new mongoose.Schema({
   Price: {
     type: Number,
     min: 0.01,
+    required: true,
   },
   CreationDate: {
     type: Date,
