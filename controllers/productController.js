@@ -2,7 +2,7 @@ const Product = require("../models/product");
 const AppError = require("../utils/appError");
 
 // Controller function to get a list of products with optional search, sorting, and pagination
-exports.getAllProducts = async (req, res, next) => {
+exports.getProducts = async (req, res, next) => {
   try {
     // Set up the initial search query
     let searchQuery = {};
@@ -84,12 +84,13 @@ exports.getProductById = async (req, res, next) => {
 };
 
 // Controller function to add a new product
-exports.addNewEmptyProduct = async (req, res, next) => {
+exports.addNewProduct = async (req, res, next) => {
+  // Add a CreationDate to the request body with the current timestamp
+  req.body.CreationDate = Date.now();
+
   try {
-    // Create a new Product instance with the current date as the CreationDate
-    const newProduct = new Product({
-      CreationDate: Date.now(),
-    });
+    // Create a new product instance using the request body
+    const newProduct = new Product(req.body);
 
     // Save the new product to the database
     await newProduct.save();
@@ -100,7 +101,7 @@ exports.addNewEmptyProduct = async (req, res, next) => {
       data: newProduct,
     });
   } catch (err) {
-    // Pass any caught errors to the next middleware
+    // Handle errors by passing them to the next middleware
     next(err);
   }
 };

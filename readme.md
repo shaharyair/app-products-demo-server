@@ -4,7 +4,7 @@ This is a Node.js application with MongoDB integration for managing products. Th
 
 ## API Endpoints
 
-### Get all products
+### Get products
 
 - **Endpoint**: `/api/products`
 - **Method**: `GET`
