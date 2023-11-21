@@ -18,13 +18,23 @@ exports.getProducts = async (req, res, next) => {
 
     // Set up sorting options based on query parameters
     let sortOptions = {};
-    if (req.query.sort) {
-      const sortOrder = req.query.order === "desc" ? -1 : 1;
-      if (req.query.sort === "name") {
-        sortOptions = { Name: sortOrder };
-      } else if (req.query.sort === "date") {
-        sortOptions = { CreationDate: sortOrder };
-      }
+
+    switch (req.query.sort) {
+      case "name":
+        sortOptions = { Name: 1 };
+        break;
+      case "-name":
+        sortOptions = { Name: -1 };
+        break;
+      case "date":
+        sortOptions = { CreationDate: 1 };
+        break;
+      case "-date":
+        sortOptions = { CreationDate: -1 };
+        break;
+      default:
+        sortOptions = { Name: 1 };
+        break;
     }
 
     // Set up pagination parameters
